@@ -1,12 +1,12 @@
 volumes:
   php-fpm-socket:
 services:
-  loadblancer:
-    build: ./loadblancer
-    image: cont/loadblancer
-    container_name: "loadblancer"
+  loadbalancer:
+    build: ./loadbalancer
+    image: cont/loadbalancer
+    container_name: "loadbalancer"
     restart: always
-    ports: ["8000:80"]
+    ports: ["80:80"]
     depends_on:
       - nginx
       - nginx2
@@ -19,7 +19,6 @@ services:
       - php-fpm-socket:/var/run/php-fpm
       - ./html:/var/www/html
     restart: always
-    ports: ["8080:80"]
     depends_on: ["php"]
 
   php:
@@ -37,4 +36,3 @@ services:
     volumes:
       - ./html2:/var/www/html
     restart: always
-    ports: ["8081:80"]
