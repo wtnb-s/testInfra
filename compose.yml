@@ -1,0 +1,40 @@
+volumes:
+  php-fpm-socket:
+services:
+  loadblancer:
+    build: ./loadblancer
+    image: cont/loadblancer
+    container_name: "loadblancer"
+    restart: always
+    ports: ["8000:80"]
+    depends_on:
+      - nginx
+      - nginx2
+
+  nginx:
+    build: ./nginx
+    image: cont/web
+    container_name: "nginx"
+    volumes:
+      - php-fpm-socket:/var/run/php-fpm
+      - ./html:/var/www/html
+    restart: always
+    ports: ["8080:80"]
+    depends_on: ["php"]
+
+  php:
+    build: ./php
+    image: cont/app
+    container_name: "php"
+    volumes:
+      - php-fpm-socket:/var/run/php-fpm
+      - ./html:/var/www/html
+
+  nginx2:
+    build: ./nginx2
+    image: cont/web2
+    container_name: "nginx2"
+    volumes:
+      - ./html2:/var/www/html
+    restart: always
+    ports: ["8081:80"]
